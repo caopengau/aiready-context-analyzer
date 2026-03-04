@@ -1,0 +1,243 @@
+'use client';
+
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import {
+  ShieldIcon,
+  ChartIcon,
+  RobotIcon,
+  TargetIcon,
+  TrendingUpIcon,
+  FileIcon,
+} from '@/components/Icons';
+
+const metrics = [
+  {
+    id: 'dependency-health',
+    name: 'Dependency Health',
+    description:
+      'Measures the stability, security, and freshness of your project dependencies.',
+    why: 'AI models often suggest outdated or insecure packages. Maintaining a clean dependency graph ensures AI stays within safe, modern bounds.',
+    examples: [
+      'Circular dependencies that confuse AI-generated refactors',
+      'Outdated libraries with deprecated APIs still being used in code',
+      'High vulnerability counts in direct dependencies',
+    ],
+    icon: <ShieldIcon className="w-6 h-6 text-emerald-400" />,
+  },
+  {
+    id: 'change-amplification',
+    name: 'Change Amplification',
+    description:
+      'Tracks how many places need to change when a single business requirement evolves.',
+    why: 'AI models struggle with high coupling. If one change requires 10 files to be updated, the AI is more likely to miss one or introduce regressions.',
+    examples: [
+      'Hardcoded string constants repeated across multiple modules',
+      'Tight coupling between UI components and data fetching logic',
+      'Lack of centralized abstractions for common domain logic',
+    ],
+    icon: <TrendingUpIcon className="w-6 h-6 text-blue-400" />,
+  },
+  {
+    id: 'context-fragmentation',
+    name: 'Context Fragmentation',
+    description: 'Analyzes how scattered related logic is across the codebase.',
+    why: 'AI has a limited "context window." If related logic is scattered across too many files, the AI cannot see the whole picture at once.',
+    examples: [
+      'A single feature spread across 15 folders',
+      'Fragmented utility functions that belong in a single service',
+      'High "token distance" between data definition and data usage',
+    ],
+    icon: <TargetIcon className="w-6 h-6 text-purple-400" />,
+  },
+  {
+    id: 'documentation-health',
+    name: 'Documentation Health',
+    description: 'Checks for missing, outdated, or misleading documentation.',
+    why: 'AI models rely heavily on docstrings and READMEs to understand intent. Outdated docs lead to "hallucinations" where AI assumes old behavior.',
+    examples: [
+      "Function docstrings that don't match the actual implementation",
+      'README.md missing setup instructions or architecture overviews',
+      'Complex logic blocks without clarifying comments',
+    ],
+    icon: <FileIcon className="w-6 h-6 text-amber-400" />,
+  },
+  {
+    id: 'naming-consistency',
+    name: 'Naming Consistency',
+    description:
+      'Measures how consistently variables, functions, and classes are named.',
+    why: 'AI predicts code based on patterns. Inconsistent naming (e.g., mixing `getUser`, `fetchAccount`, `loadProfile`) breaks these patterns and reduces AI accuracy.',
+    examples: [
+      'Mixing CamelCase and snake_case in the same project',
+      'Using different terms for the same domain entity (e.g., Client vs Customer)',
+      'Inconsistent prefixing/suffixing for similar types (e.g., UserType vs AccountInterface)',
+    ],
+    icon: <RobotIcon className="w-6 h-6 text-cyan-400" />,
+  },
+  {
+    id: 'agent-grounding',
+    name: 'Agent Grounding',
+    description:
+      'Assesses how easily an AI agent can "ground" itself in your project structure.',
+    why: 'Standard structures (like Clean Architecture or standard framework layouts) allow AI agents to navigate your code autonomously without getting lost.',
+    examples: [
+      'Missing entry points or confusing index files',
+      "Non-standard project structures that don't follow ecosystem conventions",
+      'Lack of clear separation between infrastructure and domain layers',
+    ],
+    icon: <TargetIcon className="w-6 h-6 text-rose-400" />,
+  },
+  {
+    id: 'semantic-duplicates',
+    name: 'Semantic Duplicates',
+    description:
+      'Detects logic that is repeated but written in different ways.',
+    why: 'Traditional linters miss logic duplication. AI models get confused when the same logic exists in multiple places, often updating only one.',
+    examples: [
+      'Two different validation functions for the same data type',
+      'Repeated auth check logic across multiple handlers',
+      'Multiple implementations of a specialized sorting or filtering algorithm',
+    ],
+    icon: <ChartIcon className="w-6 h-6 text-indigo-400" />,
+  },
+  {
+    id: 'ai-signal-clarity',
+    name: 'AI Signal Clarity',
+    description:
+      'Measures how much "noise" (boilerplate, dead code) exists compared to "signal" (actual logic).',
+    why: 'Excess boilerplate and dead code waste AI context window and lead to lower-quality suggestions.',
+    examples: [
+      'Massive amounts of unused boilerplate generated by frameworks',
+      'Dead code and legacy modules that are no longer active',
+      'Extremely verbose syntax where more concise alternatives exist',
+    ],
+    icon: <TrendingUpIcon className="w-6 h-6 text-teal-400" />,
+  },
+  {
+    id: 'testability-index',
+    name: 'Testability Index',
+    description:
+      'Quantifies how easy it is for an AI to write and run tests for your code.',
+    why: 'AI-generated tests are the best way to verify AI-generated code. Code that is hard to test is inherently harder for AI to maintain safely.',
+    examples: [
+      'Functions with high cyclomatic complexity and many side effects',
+      'Lack of dependency injection making it hard to mock external services',
+      "Missing or broken test infrastructure that AI agents can't run",
+    ],
+    icon: <TargetIcon className="w-6 h-6 text-orange-400" />,
+  },
+];
+
+export default function MetricsPage() {
+  return (
+    <main className="min-h-screen relative overflow-hidden bg-[#0a0a0f] py-20 px-4">
+      {/* Animated background orbs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="orb orb-blue w-96 h-96 -top-48 -left-48 opacity-20" />
+        <div className="orb orb-purple w-96 h-96 bottom-0 right-0 opacity-20" />
+      </div>
+
+      <div className="relative z-10 max-w-5xl mx-auto">
+        <div className="text-center mb-16">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-flex items-center gap-2 px-4 py-2 mb-6 bg-cyan-900/30 text-cyan-300 text-sm font-medium rounded-full border border-cyan-500/30"
+          >
+            <ChartIcon className="w-4 h-4" />
+            <span>AI Readiness Methodology</span>
+          </motion.div>
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-4xl md:text-6xl font-black text-white mb-6"
+          >
+            Understanding the{' '}
+            <span className="gradient-text-animated">9 Metrics</span>
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-xl text-slate-400 max-w-3xl mx-auto"
+          >
+            How we measure your codebase's ability to collaborate with modern AI
+            models.
+          </motion.p>
+        </div>
+
+        <div className="space-y-12">
+          {metrics.map((metric, index) => (
+            <motion.section
+              key={metric.id}
+              id={metric.id}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.1 * index }}
+              className="glass-card rounded-3xl p-8 scroll-mt-24 border-l-4 border-l-cyan-500/50"
+            >
+              <div className="flex flex-col md:flex-row gap-8">
+                <div className="flex-shrink-0">
+                  <div className="p-4 rounded-2xl bg-slate-800/50 border border-slate-700/50 shadow-inner">
+                    {metric.icon}
+                  </div>
+                </div>
+                <div className="flex-grow">
+                  <h2 className="text-2xl font-bold text-white mb-2">
+                    {metric.name}
+                  </h2>
+                  <p className="text-lg text-cyan-400/90 font-medium mb-4">
+                    {metric.description}
+                  </p>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+                    <div>
+                      <h3 className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-3">
+                        Why it matters for AI
+                      </h3>
+                      <p className="text-slate-300 leading-relaxed italic">
+                        "{metric.why}"
+                      </p>
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-3">
+                        Real-world examples
+                      </h3>
+                      <ul className="space-y-2">
+                        {metric.examples.map((example, i) => (
+                          <li
+                            key={i}
+                            className="flex items-start gap-2 text-sm text-slate-400"
+                          >
+                            <span className="text-cyan-500 mt-1">•</span>
+                            {example}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.section>
+          ))}
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1 }}
+          className="mt-20 text-center"
+        >
+          <Link
+            href="/dashboard"
+            className="btn-primary inline-flex items-center justify-center gap-2"
+          >
+            <span>←</span> Back to Dashboard
+          </Link>
+        </motion.div>
+      </div>
+    </main>
+  );
+}

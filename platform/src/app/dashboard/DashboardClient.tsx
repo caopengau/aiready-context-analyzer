@@ -948,8 +948,8 @@ function RepoCard({
       {/* Repo header */}
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h3 className="font-semibold text-white truncate text-lg">
-            {repo.name}
+          <h3 className="font-semibold text-white truncate text-lg hover:text-cyan-400 transition-colors">
+            <Link href={`/dashboard/repo/${repo.id}`}>{repo.name}</Link>
           </h3>
           {repo.description && (
             <p className="text-xs text-slate-400 mt-0.5 truncate">
@@ -1111,8 +1111,12 @@ function IconButton({
 }
 
 function BreakdownItem({ label, value }: { label: string; value: number }) {
+  const metricId = label.toLowerCase().replace(/\s+/g, '-');
   return (
-    <div className="bg-slate-800/50 rounded-lg px-2 py-1.5 border border-slate-700/50">
+    <Link
+      href={`/metrics#${metricId}`}
+      className="bg-slate-800/50 rounded-lg px-2 py-1.5 border border-slate-700/50 hover:bg-slate-700/50 transition-colors block"
+    >
       <div className={`text-xs font-bold ${scoreColor(value)}`}>{value}</div>
       <div
         className="text-[10px] text-slate-400 leading-tight truncate"
@@ -1120,7 +1124,7 @@ function BreakdownItem({ label, value }: { label: string; value: number }) {
       >
         {label}
       </div>
-    </div>
+    </Link>
   );
 }
 

@@ -225,6 +225,74 @@ export function UploadIcon({
   );
 }
 
+export function AlertCircleIcon({
+  className = 'w-6 h-6',
+  ...props
+}: { className?: string } & React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <line x1="12" y1="8" x2="12" y2="12" />
+      <line x1="12" y1="16" x2="12.01" y2="16" />
+    </svg>
+  );
+}
+
+export function InfoIcon({
+  className = 'w-6 h-6',
+  ...props
+}: { className?: string } & React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <line x1="12" y1="16" x2="12" y2="12" />
+      <line x1="12" y1="8" x2="12.01" y2="8" />
+    </svg>
+  );
+}
+
+export function BrainIcon({
+  className = 'w-6 h-6',
+  ...props
+}: { className?: string } & React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.74-3.41A2.5 2.5 0 0 1 2 14c0-1.5 1-2 1-2s-1-.5-1-2a2.5 2.5 0 0 1 2.3-2.48A2.5 2.5 0 0 1 7 5.5a2.5 2.5 0 0 1 2.5-3.5z" />
+      <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.74-3.41A2.5 2.5 0 0 0 22 14c0-1.5-1-2-1-2s1-.5 1-2a2.5 2.5 0 0 0-2.3-2.48A2.5 2.5 0 0 0 17 5.5a2.5 2.5 0 0 0-2.5-3.5z" />
+    </svg>
+  );
+}
+
 export default {
   RocketIcon,
   ChartIcon,
@@ -236,4 +304,7 @@ export default {
   TrashIcon,
   PlayIcon,
   UploadIcon,
+  AlertCircleIcon,
+  InfoIcon,
+  BrainIcon,
 };
