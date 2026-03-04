@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { signOut } from 'next-auth/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import Navbar from '@/components/Navbar';
 import {
   AlertCircleIcon,
   InfoIcon,
@@ -125,52 +125,7 @@ export default function RepoDetailClient({ repo, user }: Props) {
       <div className="absolute inset-0 bg-grid-pattern opacity-20" />
 
       {/* Header */}
-      <header className="glass sticky top-0 z-20 border-b border-indigo-500/20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto h-16 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link href="/dashboard" className="flex items-center">
-              <Image
-                src="/logo-text-transparent-dark-theme.png"
-                alt="AIReady"
-                width={140}
-                height={40}
-                className="h-8 w-auto"
-              />
-            </Link>
-          </div>
-          <div className="flex items-center gap-6">
-            <nav className="hidden md:flex items-center gap-6">
-              <Link
-                href="/dashboard"
-                className="text-sm font-medium text-slate-400 hover:text-white transition-colors"
-              >
-                Dashboard
-              </Link>
-              <Link
-                href="/settings"
-                className="text-sm font-medium text-slate-400 hover:text-white transition-colors"
-              >
-                Settings
-              </Link>
-            </nav>
-            <div className="h-6 w-px bg-slate-800 hidden sm:block" />
-            <div className="flex items-center gap-3">
-              {user.image && (
-                <img
-                  src={user.image}
-                  className="w-8 h-8 rounded-full border border-cyan-500/50"
-                />
-              )}
-              <button
-                onClick={() => signOut({ callbackUrl: '/' })}
-                className="text-sm text-slate-400 hover:text-red-400 transition-colors"
-              >
-                Sign out
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Navbar user={user} activePage="repo" />
 
       <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         {/* Repo Title & Score */}
@@ -282,12 +237,24 @@ export default function RepoDetailClient({ repo, user }: Props) {
                 <div className="grid grid-cols-1 gap-3">
                   <button
                     onClick={() => setSelectedTool(null)}
-                    className={`w-full text-left glass-card p-3 rounded-xl border transition-all ${!selectedTool ? 'border-cyan-500/50 bg-cyan-500/5' : 'border-white/5 hover:border-white/10'}`}
+                    className={`group w-full text-left glass-card p-3 rounded-xl border transition-all duration-300 relative overflow-hidden ${!selectedTool ? 'border-cyan-500/50 bg-cyan-500/10 ring-1 ring-cyan-500/20 shadow-[0_0_15px_rgba(6,182,212,0.15)]' : 'border-white/5 hover:border-white/10 text-slate-500 hover:text-white'}`}
                   >
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-white">
-                        All Dimensions
-                      </span>
+                    {!selectedTool && (
+                      <div className="absolute left-0 top-0 bottom-0 w-1 bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)]" />
+                    )}
+                    <div
+                      className={`flex items-center justify-between transition-transform duration-300 ${!selectedTool ? 'pl-3' : 'pl-1'}`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <div
+                          className={`w-2 h-2 rounded-full transition-colors duration-300 ${!selectedTool ? 'bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)]' : 'bg-slate-700 group-hover:bg-slate-500'}`}
+                        />
+                        <span
+                          className={`text-[10px] font-bold uppercase tracking-wider transition-colors duration-300 ${!selectedTool ? 'text-cyan-400' : 'text-current'}`}
+                        >
+                          All Dimensions
+                        </span>
+                      </div>
                       <span className="text-[10px] text-slate-500 font-mono">
                         {allIssues.length} issues
                       </span>
@@ -300,23 +267,37 @@ export default function RepoDetailClient({ repo, user }: Props) {
                         onClick={() =>
                           setSelectedTool(selectedTool === key ? null : key)
                         }
-                        className={`w-full text-left glass-card p-4 rounded-2xl border transition-all space-y-2 ${selectedTool === key ? 'border-cyan-500/50 bg-cyan-500/5 ring-1 ring-cyan-500/20' : 'border-white/5 hover:border-white/10'}`}
+                        className={`group w-full text-left glass-card p-4 rounded-2xl border transition-all duration-300 space-y-2 relative overflow-hidden ${selectedTool === key ? 'border-cyan-500/50 bg-cyan-500/10 ring-1 ring-cyan-500/20 shadow-[0_0_15px_rgba(6,182,212,0.15)] scale-[1.02]' : selectedTool ? 'border-white/5 opacity-50 hover:opacity-100 saturate-50 hover:saturate-100' : 'border-white/5 hover:border-white/10 hover:bg-white/[0.02]'}`}
                       >
-                        <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                            {key.replace(/([A-Z])/g, ' $1')}
-                          </span>
+                        {selectedTool === key && (
+                          <div className="absolute left-0 top-0 bottom-0 w-1 bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)]" />
+                        )}
+                        <div
+                          className={`flex items-center justify-between transition-transform duration-300 ${selectedTool === key ? 'pl-3' : 'pl-1'}`}
+                        >
+                          <div className="flex items-center gap-2">
+                            <div
+                              className={`w-2 h-2 rounded-full transition-colors duration-300 ${selectedTool === key ? 'bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)]' : 'bg-slate-700 group-hover:bg-slate-500'}`}
+                            />
+                            <span
+                              className={`text-[10px] font-bold uppercase tracking-wider transition-colors duration-300 ${selectedTool === key ? 'text-cyan-400' : 'text-slate-400 group-hover:text-white'}`}
+                            >
+                              {key.replace(/([A-Z])/g, ' $1')}
+                            </span>
+                          </div>
                           <span
-                            className={`text-sm font-black ${scoreColor(val.score)}`}
+                            className={`text-sm font-black transition-colors duration-300 ${selectedTool === key ? 'text-white drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]' : scoreColor(val.score)}`}
                           >
                             {val.score}
                           </span>
                         </div>
-                        <div className="h-1 bg-slate-800 rounded-full overflow-hidden">
+                        <div
+                          className={`h-1 bg-slate-800 rounded-full overflow-hidden transition-all duration-300 ${selectedTool === key ? 'ml-3' : 'ml-1'}`}
+                        >
                           <motion.div
                             initial={{ width: 0 }}
                             animate={{ width: `${val.score}%` }}
-                            className={`h-full ${val.score > 80 ? 'bg-emerald-500' : val.score > 60 ? 'bg-cyan-500' : val.score > 40 ? 'bg-amber-500' : 'bg-red-500'}`}
+                            className={`h-full ${val.score > 80 ? 'bg-emerald-500' : val.score > 60 ? 'bg-cyan-500' : val.score > 40 ? 'bg-amber-500' : 'bg-red-500'} ${selectedTool === key ? 'brightness-110' : 'opacity-80'}`}
                           />
                         </div>
                       </button>
@@ -364,6 +345,7 @@ export default function RepoDetailClient({ repo, user }: Props) {
                       <option value="critical">Critical</option>
                       <option value="major">Major</option>
                       <option value="minor">Minor</option>
+                      <option value="info">Info</option>
                     </select>
                   </div>
                 </div>
