@@ -1,4 +1,4 @@
-import { estimateTokens } from '@aiready/core';
+import { estimateTokens, Severity } from '@aiready/core';
 import type {
   DependencyGraph,
   DependencyNode,
@@ -58,7 +58,7 @@ export function analyzeIssues(params: {
   maxFragmentation: number;
   circularDeps: string[][];
 }): {
-  severity: ContextAnalysisResult['severity'];
+  severity: Severity;
   issues: string[];
   recommendations: string[];
   potentialSavings: number;
@@ -78,12 +78,12 @@ export function analyzeIssues(params: {
 
   const issues: string[] = [];
   const recommendations: string[] = [];
-  let severity: ContextAnalysisResult['severity'] = 'info';
+  let severity: Severity = Severity.Info;
   let potentialSavings = 0;
 
   // Check circular dependencies (CRITICAL)
   if (circularDeps.length > 0) {
-    severity = 'critical';
+    severity = Severity.Critical;
     issues.push(`Part of ${circularDeps.length} circular dependency chain(s)`);
     recommendations.push(
       'Break circular dependencies by extracting interfaces or using dependency injection'
@@ -93,12 +93,12 @@ export function analyzeIssues(params: {
 
   // Check import depth
   if (importDepth > maxDepth * 1.5) {
-    severity = 'critical';
+    severity = Severity.Critical;
     issues.push(`Import depth ${importDepth} exceeds limit by 50%`);
     recommendations.push('Flatten dependency tree or use facade pattern');
     potentialSavings += contextBudget * 0.3;
   } else if (importDepth > maxDepth) {
-    if (severity !== 'critical') severity = 'major';
+    if (severity !== Severity.Critical) severity = Severity.Major;
     issues.push(
       `Import depth ${importDepth} exceeds recommended maximum ${maxDepth}`
     );
@@ -108,7 +108,7 @@ export function analyzeIssues(params: {
 
   // Check context budget
   if (contextBudget > maxContextBudget * 1.5) {
-    severity = 'critical';
+    severity = Severity.Critical;
     issues.push(
       `Context budget ${contextBudget.toLocaleString()} tokens is 50% over limit`
     );
@@ -117,7 +117,7 @@ export function analyzeIssues(params: {
     );
     potentialSavings += contextBudget * 0.4;
   } else if (contextBudget > maxContextBudget) {
-    if (severity !== 'critical') severity = 'major';
+    if (severity !== Severity.Critical) severity = Severity.Major;
     issues.push(
       `Context budget ${contextBudget.toLocaleString()} exceeds ${maxContextBudget.toLocaleString()}`
     );
@@ -127,7 +127,7 @@ export function analyzeIssues(params: {
 
   // Check cohesion
   if (cohesionScore < minCohesion * 0.5) {
-    if (severity !== 'critical') severity = 'major';
+    if (severity !== Severity.Critical) severity = Severity.Major;
     issues.push(
       `Very low cohesion (${(cohesionScore * 100).toFixed(0)}%) - mixed concerns`
     );
@@ -136,7 +136,7 @@ export function analyzeIssues(params: {
     );
     potentialSavings += contextBudget * 0.25;
   } else if (cohesionScore < minCohesion) {
-    if (severity === 'info') severity = 'minor';
+    if (severity === Severity.Info) severity = Severity.Minor;
     issues.push(`Low cohesion (${(cohesionScore * 100).toFixed(0)}%)`);
     recommendations.push('Consider grouping related exports together');
     potentialSavings += contextBudget * 0.1;
@@ -144,7 +144,8 @@ export function analyzeIssues(params: {
 
   // Check fragmentation
   if (fragmentationScore > maxFragmentation) {
-    if (severity === 'info' || severity === 'minor') severity = 'minor';
+    if (severity === Severity.Info || severity === Severity.Minor)
+      severity = Severity.Minor;
     issues.push(
       `High fragmentation (${(fragmentationScore * 100).toFixed(0)}%) - scattered implementation`
     );
@@ -161,7 +162,7 @@ export function analyzeIssues(params: {
   if (isBuildArtifact(file)) {
     issues.push('Detected build artifact (bundled/output file)');
     recommendations.push('Exclude build outputs from analysis');
-    severity = 'info';
+    severity = Severity.Info;
     potentialSavings = 0;
   }
 

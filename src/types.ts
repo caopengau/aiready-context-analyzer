@@ -1,4 +1,4 @@
-import type { ScanOptions } from '@aiready/core';
+import type { ScanOptions, Severity } from '@aiready/core';
 
 export interface ContextAnalyzerOptions extends ScanOptions {
   maxDepth?: number; // Maximum acceptable import depth, default 5
@@ -36,7 +36,7 @@ export interface ContextAnalysisResult {
   fileClassification: FileClassification; // Type of file for analysis context
 
   // Recommendations
-  severity: 'critical' | 'major' | 'minor' | 'info';
+  severity: Severity | 'critical' | 'major' | 'minor' | 'info';
   issues: string[]; // List of specific problems
   recommendations: string[]; // Actionable suggestions
   potentialSavings: number; // Estimated token savings if fixed
