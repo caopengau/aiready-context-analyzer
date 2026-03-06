@@ -93,11 +93,11 @@ export function GraphCanvas({
         return 0.2;
       })
       .attr('stroke-width', (d: any) => {
-        if (d.type === 'similarity') return 5;
-        if (d.type === 'reference') return 3;
-        if (d.type === 'dependency') return 3;
-        if (d.type === 'structural') return 2;
-        return 1.5;
+        if (d.type === 'similarity') return 2.5;
+        if (d.type === 'reference') return 1.5;
+        if (d.type === 'dependency') return 1;
+        if (d.type === 'structural') return 1;
+        return 0.8;
       })
       .attr('stroke-dasharray', (d: any) =>
         d.type === 'reference' ? '6,4' : null

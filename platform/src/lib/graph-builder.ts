@@ -355,8 +355,13 @@ export class GraphBuilder {
 
       (ctx.dependencyList || []).forEach((dep: string) => {
         if (dep.startsWith('.') || dep.startsWith('@aiready')) {
+          // Internal relative/package imports → dependency edges
           builder.addNode(dep, 'Internal Dependency', 4);
           builder.addEdge(file, dep, 'dependency');
+        } else if (dep.startsWith('@/')) {
+          // Path alias imports (@/components/..., @/lib/...) → reference edges
+          builder.addNode(dep, 'Internal Reference', 4);
+          builder.addEdge(file, dep, 'reference');
         }
       });
     });
