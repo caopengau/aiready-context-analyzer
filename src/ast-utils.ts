@@ -3,7 +3,7 @@ import type { ExportInfo, DependencyNode, FileClassification } from './types';
 import { inferDomain, extractExports } from './semantic-analysis';
 
 /**
- * Extract exports using AST parsing with fallback to regex
+ * Extract exports using high-fidelity AST parsing across 5+ languages
  */
 export function extractExportsWithAST(
   content: string,
@@ -13,6 +13,12 @@ export function extractExportsWithAST(
 ): ExportInfo[] {
   try {
     const { exports: astExports } = parseFileExports(content, filePath);
+
+    if (astExports.length === 0 && !isTestFile(filePath)) {
+      // If AST fails to find anything, we still use regex as a last resort
+      // ONLY for unknown file types or very complex macros
+      return extractExports(content, filePath, domainOptions, fileImports);
+    }
 
     return astExports.map((exp) => ({
       name: exp.name,
@@ -28,8 +34,7 @@ export function extractExportsWithAST(
       typeReferences: (exp as any).typeReferences,
     }));
   } catch (error) {
-    void error;
-    // Fallback to regex-based extraction
+    // Ultimate fallback
     return extractExports(content, filePath, domainOptions, fileImports);
   }
 }

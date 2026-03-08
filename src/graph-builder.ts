@@ -1,4 +1,4 @@
-import { estimateTokens } from '@aiready/core';
+import { estimateTokens, parseFileExports } from '@aiready/core';
 import type { DependencyGraph, DependencyNode } from './types';
 import {
   buildCoUsageMatrix,
@@ -89,19 +89,29 @@ export function buildDependencyGraph(
     options?.domainKeywords ?? extractDomainKeywordsFromPaths(files);
 
   for (const { file, content } of files) {
-    const imports = extractImportsFromContent(content, file);
+    // 1. Get high-fidelity AST-based imports & exports
+    const { imports: astImports } = parseFileExports(content, file);
+    const importSources = astImports.map((i) => i.source);
+
+    // 2. Wrap with platform-specific metadata (v0.11+)
     const exports = extractExportsWithAST(
       content,
       file,
       { domainKeywords: autoDetectedKeywords },
-      imports
+      importSources
     );
 
     const tokenCost = estimateTokens(content);
     const linesOfCode = content.split('\n').length;
 
-    nodes.set(file, { file, imports, exports, tokenCost, linesOfCode });
-    edges.set(file, new Set(imports));
+    nodes.set(file, {
+      file,
+      imports: importSources,
+      exports,
+      tokenCost,
+      linesOfCode,
+    });
+    edges.set(file, new Set(importSources));
   }
 
   const graph: DependencyGraph = { nodes, edges };
@@ -129,112 +139,6 @@ export function buildDependencyGraph(
   }
 
   return graph;
-}
-
-/**
- * Extract imports from file content
- */
-export function extractImportsFromContent(
-  content: string,
-  filePath?: string
-): string[] {
-  const imports: string[] = [];
-  const isPython = filePath?.toLowerCase().endsWith('.py');
-  const isJava = filePath?.toLowerCase().endsWith('.java');
-  const isCSharp = filePath?.toLowerCase().endsWith('.cs');
-  const isGo = filePath?.toLowerCase().endsWith('.go');
-
-  if (isPython) {
-    const pythonPatterns = [
-      /^\s*import\s+([a-zA-Z0-9_., ]+)/gm,
-      /^\s*from\s+([a-zA-Z0-9_.]+)\s+import/gm,
-    ];
-
-    for (const pattern of pythonPatterns) {
-      let match;
-      while ((match = pattern.exec(content)) !== null) {
-        const importPath = match[1];
-        if (importPath) {
-          // Handle multiple imports in one line: import os, sys
-          const parts = importPath
-            .split(',')
-            .map((p) => p.trim().split(/\s+as\s+/)[0]);
-          imports.push(...parts);
-        }
-      }
-    }
-  } else if (isJava) {
-    const javaPatterns = [/^\s*import\s+(?:static\s+)?([a-zA-Z0-9_.]+)/gm];
-
-    for (const pattern of javaPatterns) {
-      let match;
-      while ((match = pattern.exec(content)) !== null) {
-        const importPath = match[1];
-        if (importPath) {
-          // Handle wildcard imports: import java.util.*; -> java.util
-          const cleanPath = importPath.endsWith('.*')
-            ? importPath.slice(0, -2)
-            : importPath;
-          imports.push(cleanPath);
-        }
-      }
-    }
-  } else if (isCSharp) {
-    const csharpPatterns = [
-      /^\s*using\s+(?:static\s+)?(?:[a-zA-Z0-9_.]+\s*=\s*)?([a-zA-Z0-9_.]+);/gm,
-    ];
-
-    for (const pattern of csharpPatterns) {
-      let match;
-      while ((match = pattern.exec(content)) !== null) {
-        const importPath = match[1];
-        if (importPath) {
-          imports.push(importPath);
-        }
-      }
-    }
-  } else if (isGo) {
-    const goPatterns = [
-      /^\s*import\s+"([^"]+)"/gm,
-      /^\s*import\s+\(\s*([^)]+)\)/gm,
-    ];
-
-    for (const pattern of goPatterns) {
-      let match;
-      while ((match = pattern.exec(content)) !== null) {
-        if (pattern.source.includes('\\(')) {
-          // Block import
-          const block = match[1];
-          const lines = block.split('\n');
-          for (const line of lines) {
-            const lineMatch = /"([^"]+)"/.exec(line);
-            if (lineMatch) imports.push(lineMatch[1]);
-          }
-        } else {
-          // Single import
-          if (match[1]) imports.push(match[1]);
-        }
-      }
-    }
-  } else {
-    const patterns = [
-      /import\s+.*?\s+from\s+['"](.+?)['"]/g,
-      /import\s+['"](.+?)['"]/g,
-      /require\(['"](.+?)['"]\)/g,
-    ];
-
-    for (const pattern of patterns) {
-      let match;
-      while ((match = pattern.exec(content)) !== null) {
-        const importPath = match[1];
-        if (importPath && !importPath.startsWith('node:')) {
-          imports.push(importPath);
-        }
-      }
-    }
-  }
-
-  return [...new Set(imports)];
 }
 
 /**

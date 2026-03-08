@@ -7,7 +7,12 @@
 
 ## Overview
 
-AI model context windows are precious and expensive. The **Context Analyzer** identifies import chains, redundant dependencies, and complex data structures that bloat your context window and degrade AI reasoning performance.
+AI tokens are expensive and context windows are finite. **Context Analyzer** helps you map dependencies and identify fragmentation that wastes AI resources.
+
+### Language Support
+
+- **Full Support:** TypeScript, JavaScript, Python, Java, Go, C#
+- **Capabilities:** Import depth, context budget, dependency mapping.
 
 ## 🏛️ Architecture
 
