@@ -121,12 +121,7 @@ export default function SettingsClient({ user, teams, overallScore }: Props) {
   }
 
   return (
-    <PlatformShell
-      user={user}
-      teams={teams}
-      overallScore={overallScore}
-      activePage="settings"
-    >
+    <>
       <div className="p-4 sm:p-6 lg:p-8 space-y-12 max-w-5xl mx-auto">
         <section className="space-y-6">
           <ProfileSection user={user} />
@@ -161,6 +156,6 @@ export default function SettingsClient({ user, teams, overallScore }: Props) {
         isLoading={!!deletingKeyId}
         variant="danger"
       />
-    </PlatformShell>
+    </>
   );
 }

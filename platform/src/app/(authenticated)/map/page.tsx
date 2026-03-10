@@ -1,11 +1,18 @@
 import { auth } from '@/app/api/auth/[...nextauth]/route';
 import { redirect } from 'next/navigation';
 import { getUserByEmail, listUserRepositories, listUserTeams } from '@/lib/db';
-import TrendsExplorer from '@/components/TrendsExplorer';
+import CodebaseMap from '@/components/CodebaseMap';
 import PlatformShell from '@/components/PlatformShell';
 
-export default async function TrendsPage() {
+interface Props {
+  searchParams: Promise<{ repoId?: string }>;
+}
+
+export default async function MapPage({
+  searchParams: searchParamsPromise,
+}: Props) {
   const session = await auth();
+  const searchParams = await searchParamsPromise;
 
   if (!session?.user?.email) {
     redirect('/login');
@@ -30,19 +37,8 @@ export default async function TrendsPage() {
       : null;
 
   return (
-    <PlatformShell
-      user={{
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        image: user.image,
-      }}
-      teams={teams}
-      overallScore={overallScore}
-    >
-      <div className="p-4 sm:p-6 lg:p-8">
-        <TrendsExplorer repos={repos} />
-      </div>
-    </PlatformShell>
+    <div className="p-4 sm:p-6 lg:p-8 h-full">
+      <CodebaseMap repos={repos} initialRepoId={searchParams.repoId} />
+    </div>
   );
 }

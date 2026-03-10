@@ -93,89 +93,81 @@ export default function DashboardClient({
   };
 
   return (
-    <PlatformShell
-      user={user}
-      teams={teams}
-      overallScore={overallScore}
-      activePage="dashboard"
-    >
-      <div className="p-4 sm:p-6 lg:p-8 space-y-8">
-        <WelcomeHeader
-          userName={user.name || 'Developer'}
-          repoCount={repos.length}
-          overallScore={overallScore}
-        />
+    <div className="p-4 sm:p-6 lg:p-8 space-y-8">
+      <WelcomeHeader
+        userName={user.name || 'Developer'}
+        repoCount={repos.length}
+        overallScore={overallScore}
+      />
 
-        <LimitsBanner
-          repoCount={repos.length}
-          currentTeamId={currentTeamId}
-          teams={teams}
-          analyzedRepoCount={repos.filter((r) => r.latestAnalysis).length}
-          billingLoading={billingLoading}
-          onPortal={handlePortal}
-          onCheckout={handleCheckout}
-        />
+      <LimitsBanner
+        repoCount={repos.length}
+        currentTeamId={currentTeamId}
+        teams={teams}
+        analyzedRepoCount={repos.filter((r) => r.latestAnalysis).length}
+        billingLoading={billingLoading}
+        onPortal={handlePortal}
+        onCheckout={handleCheckout}
+      />
 
-        <ErrorBanner error={uploadError} onClear={() => setUploadError(null)} />
+      <ErrorBanner error={uploadError} onClear={() => setUploadError(null)} />
 
-        <RepositorySection
-          repos={repos}
-          onAddRepo={() => setShowAddRepo(true)}
-          uploadingRepoId={uploadingRepoId}
-          scanningRepoId={scanningRepoId}
-          pendingScanRepoIds={pendingScanRepoIds}
-          onUpload={handleUploadAnalysis}
-          onScan={handleScanRepo}
-          onDelete={(id) => {
-            const repo = repos.find((r) => r.id === id);
-            if (repo) setRepoToDelete({ id: repo.id, name: repo.name });
+      <RepositorySection
+        repos={repos}
+        onAddRepo={() => setShowAddRepo(true)}
+        uploadingRepoId={uploadingRepoId}
+        scanningRepoId={scanningRepoId}
+        pendingScanRepoIds={pendingScanRepoIds}
+        onUpload={handleUploadAnalysis}
+        onScan={handleScanRepo}
+        onDelete={(id) => {
+          const repo = repos.find((r) => r.id === id);
+          if (repo) setRepoToDelete({ id: repo.id, name: repo.name });
+        }}
+        onBadge={setRepoForBadge}
+      />
+
+      <TrendsModal
+        repo={repoForTrends}
+        onClose={() => setRepoForTrends(null)}
+      />
+      <BadgeModal repo={repoForBadge} onClose={() => setRepoForBadge(null)} />
+
+      <ConfirmationModal
+        isOpen={!!repoToDelete}
+        onClose={() => setRepoToDelete(null)}
+        onConfirm={confirmDeleteRepo}
+        title="Delete Repository"
+        message={`Are you sure you want to delete "${repoToDelete?.name}"? This will permanently remove all associated analyses and data. This action cannot be undone.`}
+        confirmText="Delete Repository"
+        isLoading={!!deletingRepoId}
+        variant="danger"
+      />
+
+      {repos.length > 0 && repos.every((r) => !r.latestAnalysis) && (
+        <CliQuickstart
+          isScanning={repos.some((r) => r.isScanning) || !!scanningRepoId}
+          onScanAll={async () => {
+            for (const repo of repos) {
+              if (!repo.latestAnalysis && !repo.isScanning) {
+                await handleScanRepo(repo.id);
+              }
+            }
           }}
-          onBadge={setRepoForBadge}
         />
+      )}
 
-        <TrendsModal
-          repo={repoForTrends}
-          onClose={() => setRepoForTrends(null)}
-        />
-        <BadgeModal repo={repoForBadge} onClose={() => setRepoForBadge(null)} />
-
-        <ConfirmationModal
-          isOpen={!!repoToDelete}
-          onClose={() => setRepoToDelete(null)}
-          onConfirm={confirmDeleteRepo}
-          title="Delete Repository"
-          message={`Are you sure you want to delete "${repoToDelete?.name}"? This will permanently remove all associated analyses and data. This action cannot be undone.`}
-          confirmText="Delete Repository"
-          isLoading={!!deletingRepoId}
-          variant="danger"
-        />
-
-        {repos.length > 0 && repos.every((r) => !r.latestAnalysis) && (
-          <CliQuickstart
-            isScanning={repos.some((r) => r.isScanning) || !!scanningRepoId}
-            onScanAll={async () => {
-              for (const repo of repos) {
-                if (!repo.latestAnalysis && !repo.isScanning) {
-                  await handleScanRepo(repo.id);
-                }
-              }
-            }}
+      {currentTeamId !== 'personal' && (
+        <div className="space-y-8">
+          <TeamManagement
+            teamId={currentTeamId}
+            teamName={
+              teams.find((t) => t.teamId === currentTeamId)?.team.name || 'Team'
+            }
           />
-        )}
-
-        {currentTeamId !== 'personal' && (
-          <div className="space-y-8">
-            <TeamManagement
-              teamId={currentTeamId}
-              teamName={
-                teams.find((t) => t.teamId === currentTeamId)?.team.name ||
-                'Team'
-              }
-            />
-            <RulesetSettings teamId={currentTeamId} />
-          </div>
-        )}
-      </div>
+          <RulesetSettings teamId={currentTeamId} />
+        </div>
+      )}
 
       <AddRepoModal
         show={showAddRepo}
@@ -186,6 +178,6 @@ export default function DashboardClient({
         loading={addRepoLoading}
         error={addRepoError}
       />
-    </PlatformShell>
+    </div>
   );
 }

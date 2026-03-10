@@ -48,12 +48,7 @@ export default function MetricsClient({
   };
 
   return (
-    <PlatformShell
-      user={user ? (user as any) : null}
-      teams={teams}
-      overallScore={overallScore}
-      activePage="metrics"
-    >
+    <>
       <Script
         id="tech-article-schema-metrics"
         type="application/ld+json"
@@ -127,6 +122,6 @@ export default function MetricsClient({
           </motion.div>
         </div>
       </div>
-    </PlatformShell>
+    </>
   );
 }
