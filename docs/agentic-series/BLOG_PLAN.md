@@ -7,7 +7,7 @@ This series explores the evolution of software engineering from human-centric "r
 ## Progress Overview
 
 - **Series Status**: In Progress
-- **Total Posts**: 11
+- **Total Posts**: 12
 - **Completed**: 1 (Published)
 - **Next Up**: Post 2: Beyond the Sidekick
 
@@ -25,7 +25,12 @@ This series explores the evolution of software engineering from human-centric "r
   - **Focus**: Defining the transition from AI-human chats to autonomous Agentic Systems and Self-Conscious Evolution.
   - **Draft**: [02-beyond-the-sidekick.md](./02-beyond-the-sidekick.md)
 
-- [ ] **Post 3: The Neural Spine: Event-Driven Orchestration**
+- [ ] **Post 3: The Economic Moat (Quantifying your AI ROI)**
+  - **Status**: Drafted
+  - **Focus**: Turning Technical Debt into a Token Budget. Linking Fragmentation Scores to real-world model pricing.
+  - **Draft**: [part-8-the-economic-moat.md](../../landing/blog-posts/part-8-the-economic-moat.md)
+
+- [ ] **Post 4: The Neural Spine: Event-Driven Orchestration**
   - **Status**: Planned
   - **Focus**: Why synchronous "agent loops" fail and why an asynchronous backbone (EventBridge) is required.
 
@@ -53,13 +58,24 @@ This series explores the evolution of software engineering from human-centric "r
   - **Status**: Planned
   - **Focus**: Preventing runaway loops and the IAM implications of autonomous infrastructure.
 
-- [ ] **Post 10: The Roadmap to Autonomy: From Sandbox to Prod**
+- [ ] **Post 11: The Roadmap to Autonomy: From Sandbox to Prod**
   - **Status**: Planned
   - **Focus**: The evolving roadmap—Kanban pipelines, skill marketplaces, and multi-tenant isolation.
 
-- [ ] **Post 11: The Living Repository: Reflections on the Future**
+- [ ] **Post 12: The Living Repository: Reflections on the Future**
   - **Status**: Planned
   - **Focus**: What it means to work on a codebase that is actively working back on you.
+
+---
+
+## 📣 Promotion & Market Dominance Strategy
+
+To establish **Agentic Readiness** as our category, we will execute:
+
+1.  **"Spore" Social Strategy**: Extract high-impact snippets (e.g., "The Navigation Tax") for X/LinkedIn.
+2.  **The Readiness Challenge**: Encourage users to run `npx @aiready/cli scan --score` and share results.
+3.  **Direct Positioning**: Contrast AIReady against legacy tools (ESLint/Sonar) that lack AI-context awareness.
+4.  **Influencer Outreach**: Share our "surface area of confusion" metrics with AI-first tool creators.
 
 ---
 
