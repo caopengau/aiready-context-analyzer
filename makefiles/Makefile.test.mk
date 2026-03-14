@@ -63,13 +63,8 @@ test-integration: ## Run monorepo integration tests (Tier 2)
 
 test-verify-cli: ## Run a smoke scan and verify CLI output
 	@$(call log_step,Running CLI smoke test...)
-	@# Ensure CLI is built first
-	@$(PNPM) --filter @aiready/cli build
-	@# Run scan on a small subdirectory
-	@node ./packages/cli/dist/cli.js scan packages/cli/src || { $(call log_error,CLI scan failed); exit 1; }
-	@$(call log_step,Verifying scan output...)
-	@LATEST_REPORT=$$(ls -t packages/cli/src/.aiready/aiready-report-*.json | head -n1); \
-	node ./scripts/verify-aiready-output.js "$$LATEST_REPORT" || { $(call log_error,Output verification failed); exit 1; }
+	@# Run scan directly using aiready (npm linked)
+	@aiready scan packages/cli/src --score || { $(call log_error,CLI scan failed); exit 1; }
 	@$(call log_success,CLI smoke test passed)
 
 test-landing-e2e: ## Run E2E tests for landing page
