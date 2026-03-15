@@ -176,6 +176,9 @@ publish-cli: ## Publish @aiready/cli to GitHub (shortcut for: make publish SPOKE
 publish-skills: ## Publish @aiready/skills to GitHub (shortcut for: make publish SPOKE=skills)
 	@$(MAKE) publish SPOKE=skills OWNER=$(OWNER)
 
+publish-mcp-server: ## Publish @aiready/mcp-server to GitHub
+	@$(MAKE) publish SPOKE=mcp-server OWNER=$(OWNER)
+
 npm-publish-core: ## Publish @aiready/core to npm (shortcut for: make npm-publish SPOKE=core)
 	@$(MAKE) npm-publish SPOKE=core OTP=$(OTP)
 

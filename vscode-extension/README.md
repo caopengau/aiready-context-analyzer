@@ -12,6 +12,22 @@
 - ⚡ **Quick Scan** - Analyze current file with a single command
 - 🔬 **9-Metric Methodology** - Deep dive into 9 dimensions of AI-readiness
 - 🔧 **Configurable** - Set thresholds, severity levels, and more
+- 🤖 **MCP Server** - Expose AIReady capabilities to MCP-compliant AI agents (Cursor, Windsurf, Claude)
+
+## MCP Server Integration
+
+AIReady includes a built-in Model Context Protocol (MCP) server that you can integrate directly into your AI coding assistants. This allows your agent to analyze your codebase context dynamically.
+
+### Cursor IDE
+
+1. Open Cursor Settings.
+2. Navigate to **Features** -> **MCP Servers**.
+3. Add a new server with the command: `npx -y @aiready/mcp-server`
+
+### Windsurf IDE
+
+1. Open settings and add a new MCP Server.
+2. Set the command to: `npx -y @aiready/mcp-server`
 
 ## Installation
 

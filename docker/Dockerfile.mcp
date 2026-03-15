@@ -1,0 +1,55 @@
+# AIReady MCP Server Docker Image
+# Multi-stage build for optimized image size
+
+# Build stage
+FROM node:24-alpine AS builder
+
+WORKDIR /app
+
+# Install pnpm
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+# Copy package files
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY packages/core ./packages/core
+COPY packages/mcp-server ./packages/mcp-server
+COPY packages/pattern-detect ./packages/pattern-detect
+COPY packages/context-analyzer ./packages/context-analyzer
+COPY packages/consistency ./packages/consistency
+COPY tsconfig.base.json ./
+
+# Install dependencies and build
+RUN pnpm install --frozen-lockfile
+RUN pnpm --filter @aiready/mcp-server build
+
+# Runtime stage
+FROM node:24-alpine
+
+LABEL maintainer="AIReady <hello@getaiready.dev>"
+LABEL org.opencontainers.image.title="AIReady MCP Server"
+LABEL org.opencontainers.image.description="AIReady Model Context Protocol (MCP) Server"
+LABEL org.opencontainers.image.url="https://getaiready.dev"
+LABEL org.opencontainers.image.source="https://github.com/caopengau/aiready"
+LABEL org.opencontainers.image.vendor="AIReady"
+
+WORKDIR /app
+
+# Copy built packages from builder
+COPY --from=builder /app/packages/mcp-server/dist ./dist
+COPY --from=builder /app/packages/mcp-server/package.json ./
+COPY --from=builder /app/node_modules ./node_modules
+# Need to copy dependencies workspaces as well so that relative imports resolve correctly
+COPY --from=builder /app/packages/core ./packages/core
+COPY --from=builder /app/packages/pattern-detect ./packages/pattern-detect
+COPY --from=builder /app/packages/context-analyzer ./packages/context-analyzer
+COPY --from=builder /app/packages/consistency ./packages/consistency
+
+# Create non-root user
+RUN addgroup -g 1001 -S aiready && \
+    adduser -S -D -H -u 1001 -h /app -s /sbin/nologin -G aiready -g aiready aiready && \
+    chown -R aiready:aiready /app
+
+USER aiready
+
+# Set up entry point
+ENTRYPOINT ["node", "dist/index.js"]
