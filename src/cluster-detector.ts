@@ -102,26 +102,3 @@ export function detectModuleClusters(
 
   return clusters;
 }
-
-function generateSuggestedStructure(
-  files: string[],
-  tokens: number,
-  fragmentation: number
-) {
-  const targetFiles = Math.max(1, Math.ceil(tokens / 10000));
-  const plan: string[] = [];
-
-  if (fragmentation > 0.5) {
-    plan.push(
-      `Consolidate ${files.length} files scattered across multiple directories into ${targetFiles} core module(s)`
-    );
-  }
-
-  if (tokens > 20000) {
-    plan.push(
-      `Domain logic is very large (${Math.round(tokens / 1000)}k tokens). Ensure clear sub-domain boundaries.`
-    );
-  }
-
-  return { targetFiles, consolidationPlan: plan };
-}
