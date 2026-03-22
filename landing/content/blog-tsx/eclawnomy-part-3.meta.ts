@@ -14,8 +14,8 @@ const meta = {
   ],
   readingTime: '7 min read',
   slug: 'eclawnomy-part-3-physics-serverless',
-  cover: '/blog-assets/serverless-physics.png',
-  ogImage: '',
+  cover: '/serverless-physics.png',
+  ogImage: '/serverless-physics.png',
 };
 
 export default meta;

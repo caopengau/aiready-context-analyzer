@@ -13,17 +13,11 @@ import {
 const Post = () => (
   <>
     <div className="my-8 max-w-4xl mx-auto">
-      <div className="aspect-[21/9] w-full bg-indigo-950 border border-indigo-900 rounded-3xl overflow-hidden relative flex items-center justify-center">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_#6366f133_0%,_transparent_60%)]"></div>
-        <div className="z-10 text-center">
-          <div className="text-indigo-300 font-mono text-[10px] uppercase tracking-[0.4em] mb-4">
-            Service // Governance
-          </div>
-          <h1 className="text-4xl md:text-5xl font-black italic tracking-tighter text-white uppercase">
-            EVOLUTION <span className="text-indigo-400">AS A SERVICE</span>
-          </h1>
-        </div>
-      </div>
+      <img
+        src="/clawmore-evolution.png"
+        alt="Eclawnomy Part 4 - cover"
+        className="w-full rounded-3xl shadow-2xl border border-slate-200 dark:border-zinc-800 focus:outline-none"
+      />
     </div>
 
     <p className="text-xl font-medium text-indigo-300 italic mb-10">

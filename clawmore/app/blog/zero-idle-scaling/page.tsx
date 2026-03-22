@@ -107,6 +107,14 @@ export default function BlogPost() {
               uptime to on-demand intelligence. If it isn&apos;t working, it
               shouldn&apos;t be costing.
             </p>
+            <div className="mt-12 bg-zinc-900 border border-white/5 rounded-3xl overflow-hidden shadow-2xl relative group">
+              <img
+                src="/blog-assets/zero-idle-scaling.png"
+                alt="Zero Idle Scaling Cover"
+                className="w-full aspect-video object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
+            </div>
           </div>
         </div>
       </header>

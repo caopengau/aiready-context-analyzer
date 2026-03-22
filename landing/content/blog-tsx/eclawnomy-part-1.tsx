@@ -6,13 +6,11 @@ import { ChevronRight, Zap, Target, TrendingUp } from 'lucide-react';
 const Post = () => (
   <>
     <div className="my-8 max-w-4xl mx-auto">
-      <div className="aspect-[21/9] w-full bg-gradient-to-br from-indigo-900 via-purple-900 to-black rounded-3xl shadow-2xl flex items-center justify-center border border-white/10 overflow-hidden relative">
-        <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
-        <h1 className="text-4xl md:text-6xl font-black text-white italic tracking-tighter text-center px-4 z-10">
-          THE <span className="text-indigo-400">ECLAWNOMY</span> <br />{' '}
-          Manifesto
-        </h1>
-      </div>
+      <img
+        src="/eclawnomy-manifesto.png"
+        alt="Eclawnomy Part 1 - cover"
+        className="w-full rounded-3xl shadow-2xl border border-slate-200 dark:border-zinc-800 focus:outline-none"
+      />
     </div>
 
     <p className="text-xl font-medium text-indigo-400 italic">

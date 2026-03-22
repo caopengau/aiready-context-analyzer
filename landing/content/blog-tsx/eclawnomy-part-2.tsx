@@ -15,17 +15,11 @@ import {
 const Post = () => (
   <>
     <div className="my-8 max-w-4xl mx-auto">
-      <div className="aspect-[21/9] w-full bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden relative flex items-center justify-center">
-        <div className="absolute inset-0 bg-gradient-to-t from-indigo-500/10 to-transparent"></div>
-        <div className="z-10 text-center">
-          <div className="text-indigo-400 font-mono text-xs uppercase tracking-widest mb-4">
-            Unit // Dissection
-          </div>
-          <h1 className="text-4xl md:text-5xl font-black italic tracking-tighter text-white">
-            THE ANATOMY OF <span className="text-indigo-500">AGENCY</span>
-          </h1>
-        </div>
-      </div>
+      <img
+        src="/claw-anatomy.png"
+        alt="Eclawnomy Part 2 - cover"
+        className="w-full rounded-3xl shadow-2xl border border-slate-200 dark:border-zinc-800 focus:outline-none"
+      />
     </div>
 
     <p className="text-xl font-medium text-slate-400 italic mb-10">

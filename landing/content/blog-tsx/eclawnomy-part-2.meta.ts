@@ -14,8 +14,8 @@ const meta = {
   ],
   readingTime: '6 min read',
   slug: 'eclawnomy-part-2-anatomy-of-agency',
-  cover: '/blog-assets/claw-anatomy.png',
-  ogImage: '',
+  cover: '/claw-anatomy.png',
+  ogImage: '/claw-anatomy.png',
 };
 
 export default meta;

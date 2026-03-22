@@ -15,8 +15,8 @@ const meta = {
   ],
   readingTime: '5 min read',
   slug: 'eclawnomy-part-1-chatbot-to-coworker',
-  cover: '/blog-assets/eclawnomy-manifesto.png',
-  ogImage: '',
+  cover: '/eclawnomy-manifesto.png',
+  ogImage: '/eclawnomy-manifesto.png',
 };
 
 export default meta;

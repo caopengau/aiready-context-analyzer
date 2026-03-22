@@ -13,17 +13,11 @@ import {
 const Post = () => (
   <>
     <div className="my-8 max-w-4xl mx-auto">
-      <div className="aspect-[21/9] w-full bg-black border border-zinc-800 rounded-3xl overflow-hidden relative flex items-center justify-center">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_#3b82f655_0%,_transparent_70%)]"></div>
-        <div className="z-10 text-center">
-          <div className="text-blue-400 font-mono text-[10px] uppercase tracking-[0.5em] mb-4">
-            Physics // Efficiency
-          </div>
-          <h1 className="text-4xl md:text-5xl font-black italic tracking-tighter text-white uppercase">
-            $0 <span className="text-blue-500">IDLE</span> COST
-          </h1>
-        </div>
-      </div>
+      <img
+        src="/serverless-physics.png"
+        alt="Eclawnomy Part 3 - cover"
+        className="w-full rounded-3xl shadow-2xl border border-slate-200 dark:border-zinc-800 focus:outline-none"
+      />
     </div>
 
     <p className="text-xl font-medium text-blue-400 italic mb-10 text-center">

@@ -14,8 +14,8 @@ const meta = {
   ],
   readingTime: '5 min read',
   slug: 'eclawnomy-part-4-eaas-mutation',
-  cover: '/blog-assets/clawmore-evolution.png',
-  ogImage: '',
+  cover: '/clawmore-evolution.png',
+  ogImage: '/clawmore-evolution.png',
 };
 
 export default meta;
