@@ -1,4 +1,7 @@
-import { Severity } from '@aiready/core';
+import { Severity, isBuildArtifact } from '@aiready/core';
+
+// Re-export for testing
+export { isBuildArtifact };
 
 /**
  * Internal issue analysis logic
@@ -135,22 +138,4 @@ export function analyzeIssues(params: {
     recommendations,
     potentialSavings: Math.floor(potentialSavings),
   };
-}
-
-/**
- * Determines if a file path belongs to a build artifact or dependency folder.
- * Helps exclude generated files from analysis to prevent false positives.
- *
- * @param filePath - The path to check
- * @returns True if the file is a build artifact, false otherwise
- */
-export function isBuildArtifact(filePath: string): boolean {
-  const lower = filePath.toLowerCase();
-  return (
-    lower.includes('/node_modules/') ||
-    lower.includes('/dist/') ||
-    lower.includes('/build/') ||
-    lower.includes('/out/') ||
-    lower.includes('/.next/')
-  );
 }

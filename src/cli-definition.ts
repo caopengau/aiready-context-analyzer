@@ -1,5 +1,4 @@
 import { Command } from 'commander';
-import { contextActionHandler } from './cli-action';
 
 /**
  * Define the context analysis command structure.
@@ -57,5 +56,8 @@ export function defineContextCommand(program: Command): void {
       '--interactive',
       'Run interactive setup to suggest excludes and focus areas'
     )
-    .action(contextActionHandler);
+    .action(async (directory, options) => {
+      const { contextActionHandler } = await import('./cli-action');
+      await contextActionHandler(directory, options);
+    });
 }

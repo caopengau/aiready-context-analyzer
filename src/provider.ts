@@ -9,10 +9,8 @@ import {
   IssueType,
   SpokeOutputSchema,
 } from '@aiready/core';
-import { analyzeContext } from './orchestrator';
-import { generateSummary } from './summary';
 import { calculateContextScore } from './scoring';
-import { ContextAnalyzerOptions, ContextAnalysisResult } from './types';
+import type { ContextAnalyzerOptions, ContextAnalysisResult } from './types';
 
 /**
  * Context Analyzer Tool Provider
@@ -22,6 +20,9 @@ export const ContextAnalyzerProvider: ToolProvider = {
   alias: ['context', 'fragmentation', 'budget'],
 
   async analyze(options: ScanOptions): Promise<SpokeOutput> {
+    const { analyzeContext } = await import('./orchestrator');
+    const { generateSummary } = await import('./summary');
+
     const results = await analyzeContext(options as ContextAnalyzerOptions);
     const summary = generateSummary(results, options);
 
@@ -39,7 +40,6 @@ export const ContextAnalyzerProvider: ToolProvider = {
         metrics: {
           tokenCost: r.tokenCost,
           complexityScore: r.importDepth,
-          // Map other context-specific metrics if needed
         },
       })
     );

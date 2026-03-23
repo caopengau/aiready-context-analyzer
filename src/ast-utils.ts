@@ -1,4 +1,4 @@
-import { parseFileExports } from '@aiready/core';
+import { parseFileExports, isTestFile } from '@aiready/core';
 import type { ExportInfo } from './types';
 import { inferDomain, extractExports } from './semantic/domain-inference';
 
@@ -44,31 +44,6 @@ export async function extractExportsWithAST(
     // Ultimate fallback
     return extractExports(content, filePath, domainOptions, fileImports);
   }
-}
-
-/**
- * Check if a file is a test, mock, or fixture file.
- *
- * @param filePath - The path to the file to check.
- * @returns True if the file matches test/mock patterns.
- */
-export function isTestFile(filePath: string): boolean {
-  const lower = filePath.toLowerCase();
-  return (
-    lower.includes('.test.') ||
-    lower.includes('.spec.') ||
-    lower.includes('/__tests__/') ||
-    lower.includes('/tests/') ||
-    lower.includes('/test/') ||
-    lower.includes('test-') ||
-    lower.includes('-test') ||
-    lower.includes('/__mocks__/') ||
-    lower.includes('/mocks/') ||
-    lower.includes('/fixtures/') ||
-    lower.includes('.mock.') ||
-    lower.includes('.fixture.') ||
-    lower.includes('/test-utils/')
-  );
 }
 
 /**

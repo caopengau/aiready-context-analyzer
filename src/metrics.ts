@@ -1,6 +1,5 @@
-import { calculateImportSimilarity } from '@aiready/core';
+import { calculateImportSimilarity, isTestFile } from '@aiready/core';
 import type { ExportInfo } from './types';
-import { isTestFile } from './ast-utils';
 
 /**
  * Calculates a cohesion score (0-1) for a module based on its exports,
