@@ -1,13 +1,16 @@
 # Adding a New Tool Sub-Instructions
 
-Follow these steps to add a new analysis tool:
+Follow these steps to add a new analysis tool (spoke) to the AIReady monorepo.
+
+---
 
 ### Step 1: Create Package Structure
 
 ```bash
 mkdir -p packages/your-tool/src
-cd packages/your-tool
 ```
+
+---
 
 ### Step 2: Create `package.json`
 
@@ -41,7 +44,9 @@ cd packages/your-tool
 }
 ```
 
-### Step 3: Create `src/index.ts`
+---
+
+### Step 3: Create `src/index.ts` (Analyzer)
 
 ```typescript
 import { scanFiles, readFileContent } from '@aiready/core';
@@ -57,75 +62,69 @@ export async function analyzeYourTool(
   const files = await scanFiles(options);
   const results: AnalysisResult[] = [];
 
-  // Your analysis logic here
-  make build
-  # or: pnpm --filter @aiready/your-tool dev
-```
+  for (const file of files) {
+    const content = await readFileContent(file);
+    // Your analysis logic here
+  }
 
-### Step 8: Publish (After Implementation)
-
-```bash
-# Commit everything
-git add .
-git commit -m "feat: add @aiready/your-tool"
-make push  # Syncs all repositories
-
-# Create GitHub repo
-gh repo create caopengau/aiready-your-tool --public
-
-# Release first version
-make release-one SPOKE=your-tool TYPE=minor
+  return results;
 }
 ```
 
-### Step 4: Implement ToolProvider and Registry
+---
+
+### Step 4: Implement ToolProvider and Register with ToolRegistry
 
 Every spoke must implement the `ToolProvider` interface and register with the global `ToolRegistry` so that it is automatically discovered by the unified CLI.
 
-1.  **Create `src/provider.ts`**:
-    ```typescript
-    import { 
-      ToolProvider, 
-      ToolName, 
-      SpokeOutput, 
-      ScanOptions, 
-      ToolScoringOutput 
-    } from '@aiready/core';
-    import { analyzeYourTool } from './analyzer';
-    import { calculateYourToolScore } from './scoring';
+**Create `src/provider.ts`:**
 
-    export const YourToolProvider: ToolProvider = {
-      id: ToolName.YourToolID, // Add to ToolName enum in @aiready/core if new
-      alias: ['your-alias'],
-      
-      async analyze(options: ScanOptions): Promise<SpokeOutput> {
-        const result = await analyzeYourTool(options);
-        return {
-          results: result.results,
-          summary: result.summary,
-          metadata: { toolName: ToolName.YourToolID, version: '0.1.0' }
-        };
-      },
+```typescript
+import {
+  ToolProvider,
+  ToolName,
+  SpokeOutput,
+  ScanOptions,
+  ToolScoringOutput
+} from '@aiready/core';
+import { analyzeYourTool } from './analyzer';
+import { calculateYourToolScore } from './scoring';
 
-      score(output: SpokeOutput, options: ScanOptions): ToolScoringOutput {
-        return calculateYourToolScore(output.summary, (options as any).costConfig);
-      },
+export const YourToolProvider: ToolProvider = {
+  id: ToolName.YourToolID, // Add to ToolName enum in @aiready/core if new
+  alias: ['your-alias'],
 
-      defaultWeight: 10
+  async analyze(options: ScanOptions): Promise<SpokeOutput> {
+    const result = await analyzeYourTool(options);
+    return {
+      results: result.results,
+      summary: result.summary,
+      metadata: { toolName: ToolName.YourToolID, version: '0.1.0' }
     };
-    ```
+  },
 
-2.  **Register in `src/index.ts`**:
-    ```typescript
-    import { ToolRegistry } from '@aiready/core';
-    import { YourToolProvider } from './provider';
+  score(output: SpokeOutput, options: ScanOptions): ToolScoringOutput {
+    return calculateYourToolScore(output.summary, (options as any).costConfig);
+  },
 
-    // Register with global registry for automatic CLI discovery
-    ToolRegistry.register(YourToolProvider);
+  defaultWeight: 10
+};
+```
 
-    export { YourToolProvider };
-    // ... other exports
-    ```
+**Register in `src/index.ts`:**
+
+```typescript
+import { ToolRegistry } from '@aiready/core';
+import { YourToolProvider } from './provider';
+
+// Register with global registry for automatic CLI discovery
+ToolRegistry.register(YourToolProvider);
+
+export { YourToolProvider };
+// ... other exports
+```
+
+---
 
 ### Step 5: Create `src/cli.ts`
 
@@ -151,7 +150,9 @@ program
 program.parse();
 ```
 
-### Step 5: Create `tsconfig.json`
+---
+
+### Step 6: Create `tsconfig.json`
 
 ```json
 {
@@ -164,7 +165,9 @@ program.parse();
 }
 ```
 
-### Step 6: Create `README.md`
+---
+
+### Step 7: Create `README.md`
 
 Document:
 
@@ -174,9 +177,45 @@ Document:
 - Usage (CLI + programmatic)
 - Configuration options
 
-### Step 7: Build and Test
+Use the architecture diagram from another spoke README as a template and mark `★ = YOU ARE HERE`.
+
+---
+
+### Step 8: Build and Test
 
 ```bash
-pnpm build
+make build
+# or build only this package in watch mode:
 pnpm --filter @aiready/your-tool dev
 ```
+
+---
+
+### Step 9: Publish (After Implementation)
+
+```bash
+# Commit and sync
+git add .
+git commit -m "feat: add @aiready/your-tool"
+make push  # Syncs monorepo + all spoke repos
+
+# Create GitHub repo for the spoke
+gh repo create caopengau/aiready-your-tool --public
+
+# Release first version
+make release-one SPOKE=your-tool TYPE=minor
+# ALWAYS re-release CLI after adding a new spoke:
+make release-one SPOKE=cli TYPE=patch
+```
+
+---
+
+### Step 10: Update doc-mapping.json
+
+Add your new tool to `.github/doc-mapping.json` under `OSS_SPOKES`:
+
+```json
+"your-tool": "packages/your-tool/README.md"
+```
+
+Also update `copilot-instructions.md` and `GEMINI.md` package tables.

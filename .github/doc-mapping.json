@@ -14,9 +14,18 @@
     "pattern-detect": "packages/pattern-detect/README.md",
     "context-analyzer": "packages/context-analyzer/README.md",
     "consistency": "packages/consistency/README.md",
+    "agent-grounding": "packages/agent-grounding/README.md",
+    "ai-signal-clarity": "packages/ai-signal-clarity/README.md",
+    "change-amplification": "packages/change-amplification/README.md",
+    "doc-drift": "packages/doc-drift/README.md",
+    "testability": "packages/testability/README.md",
+    "deps": "packages/deps/README.md",
+    "contract-enforcement": "packages/contract-enforcement/README.md",
+    "agents": "packages/agents/README.md",
     "visualizer": "packages/visualizer/README.md",
     "components": "packages/components/README.md",
-    "skills": "packages/skills/README.md"
+    "skills": "packages/skills/README.md",
+    "mcp-server": "packages/mcp-server/README.md"
   },
 
   "PLATFORM_DOCS": {
@@ -68,5 +77,5 @@
     "tracking-stats": ".github/plans/research/TRACKING-STATS.md"
   },
 
-  "_usage": "Load doc-mapping.json and access the relevant section based on task type. HUB_DOCS for core context, OSS_SPOKES for package work, PLATFORM_DOCS for SaaS development."
+  "_usage": "Load doc-mapping.json and access the relevant section based on task type. HUB_DOCS for core context, OSS_SPOKES for package work, PLATFORM_DOCS for SaaS development, SUB_INSTRUCTIONS for workflows and patterns."
 }

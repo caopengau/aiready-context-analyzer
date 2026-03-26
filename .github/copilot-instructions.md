@@ -10,25 +10,34 @@ AIReady is a monorepo with tools for assessing AI-readiness and improving AI lev
 
 **Hubs:**
 
-- **[@aiready/core](packages/core)** - Shared utilities and types (HUB) - v0.9.22
-- **[@aiready/cli](packages/cli)** - Unified CLI interface (HUB) - v0.9.26
+- **[@aiready/core](packages/core)** - Shared utilities and types (HUB)
+- **[@aiready/cli](packages/cli)** - Unified CLI interface (HUB)
 
 **Spokes:**
 
-- **[@aiready/pattern-detect](packages/pattern-detect)** - Semantic duplicate detection - v0.11.22
-- **[@aiready/context-analyzer](packages/context-analyzer)** - Context window cost & dependency fragmentation - v0.9.26
-- **[@aiready/consistency](packages/consistency)** - Naming conventions and pattern consistency - v0.8.22
-- **[@aiready/visualizer](packages/visualizer)** - Interactive force-directed graph visualization - v0.1.28
-- **[@aiready/components](packages/components)** - Shared UI component library - v0.1.22
-- **[@aiready/skills](packages/skills)** - Agent skills for AI assistants - v0.1.0
+- **[@aiready/pattern-detect](packages/pattern-detect)** - Semantic duplicate detection
+- **[@aiready/context-analyzer](packages/context-analyzer)** - Context window cost & dependency fragmentation
+- **[@aiready/consistency](packages/consistency)** - Naming conventions and pattern consistency
+- **[@aiready/agent-grounding](packages/agent-grounding)** - Evaluates codebase groundability for AI agents
+- **[@aiready/ai-signal-clarity](packages/ai-signal-clarity)** - Detects hallucination-risk patterns
+- **[@aiready/change-amplification](packages/change-amplification)** - Blast-radius & coupling analysis
+- **[@aiready/doc-drift](packages/doc-drift)** - Documentation freshness vs code churn
+- **[@aiready/testability](packages/testability)** - AI agent verify-loop friction analysis
+- **[@aiready/deps](packages/deps)** - Dependency health analysis
+- **[@aiready/contract-enforcement](packages/contract-enforcement)** - API contract validation
+- **[@aiready/agents](packages/agents)** - Agent orchestration & task execution
+- **[@aiready/visualizer](packages/visualizer)** - Interactive force-directed graph visualization
+- **[@aiready/components](packages/components)** - Shared UI component library
+- **[@aiready/skills](packages/skills)** - Agent skills for AI assistants
+- **[@aiready/mcp-server](packages/mcp-server)** - MCP server for Claude/Cursor/Windsurf
 
 **Extension:**
 
-- **[aiready](vscode-extension)** - VS Code extension - v0.3.5
+- **[aiready](vscode-extension)** - VS Code extension
 
 ### Distribution Channels
 
-- **[action-marketplace/](action-marketplace)** - GitHub Action for CI/CD integration - v1.0.0
+- **[action-marketplace/](action-marketplace)** - GitHub Action for CI/CD integration
 - **[docker/](docker)** - Docker images (Dockerfile, Dockerfile.slim)
 - **[homebrew/](homebrew)** - Homebrew formula (aiready.rb)
 
@@ -91,7 +100,7 @@ aws configure --profile aiready
 **Key Rules (Never Forget):**
 
 - ❌ **NEVER** commit directly to spoke repos
-- ✅ **ALWAYS** use `make sync` after monorepo commits
+- ✅ **ALWAYS** use `make push` after monorepo commits (syncs all spoke repos automatically)
 - ✅ **ALWAYS** develop in the monorepo hub
 - ✅ **ALWAYS** check `make release-status` before releases
 
@@ -101,7 +110,7 @@ aws configure --profile aiready
 # After changes in monorepo:
 git add .
 git commit -m "feat: your changes"
-make sync  # ← This syncs ALL repos automatically
+make push  # ← This syncs monorepo + ALL spoke repos automatically
 ```
 
 ## Publishing & Distribution
@@ -113,7 +122,7 @@ make help                    # Show all available commands
 make publish-vscode          # Publish VS Code extension (requires VSCE_PAT)
 make vscode-publish          # Alias for vscode-publish
 make npm-publish SPOKE=core  # Publish individual npm package
-make sync                    # Sync all spokes to GitHub repos
+make push                    # Push monorepo + sync all spokes to GitHub repos
 ```
 
 ### VS Code Extension
@@ -139,6 +148,12 @@ make sync                    # Sync all spokes to GitHub repos
 - Formula: `homebrew/aiready.rb`
 - Install: `brew install caopengau/aiready/aiready`
 
+### MCP Server
+
+- Package: `@aiready/mcp-server`
+- Registries: Smithery, Glama, Pulsar
+- Direct: `npx -y @aiready/mcp-server`
+
 ## Agent Workflow
 
 1. **Load Context:** Use doc-mapping.json to load relevant sub-instructions based on task (e.g., development-workflow.md for coding, adding-new-tool.md for new spokes, devops-best-practices.md for DevOps). Run `make help` to understand available curated commands.
@@ -159,7 +174,7 @@ make sync                    # Sync all spokes to GitHub repos
 - **AWS:** Is AWS_PROFILE=aiready set correctly?
 - **AWS:** Did I get explicit user confirmation before deploying?
 - **GIT:** Am I following hub-and-spoke git practices? (Always load git-workflow first!)
-- **GIT:** Should I use `make sync` or direct git commands?
+- **GIT:** Did I use `make push` instead of direct git commands?
 - **GIT:** Is this change in the monorepo or a spoke repo?
 - **RELEASE:** After publishing ANY spoke separately, did I republish CLI? (Required!)
 - **RELEASE:** Am I excluding landing from release-all? (It has separate workflow)
@@ -173,5 +188,5 @@ make sync                    # Sync all spokes to GitHub repos
 - Use Makefiles for all DevOps practices (see devops-best-practices.md)
 - **Web Deployment:** Load `landing-deployment` from doc-mapping.json for Vercel/AWS deployment guides
 - **GIT:** Always load `git-workflow` sub-instructions before git operations
-- **GIT:** Use `make sync` instead of direct git commands
+- **GIT:** Use `make push` instead of direct git commands
 - **Publishing:** Use `make publish-*` commands instead of manual publishing

@@ -30,7 +30,7 @@ git push origin main
 
 ```bash
 # After making changes
-make push-all  # Syncs monorepo + all spokes
+make push  # Syncs monorepo + all spokes
 
 # Or for individual spokes
 make push SPOKE=cli
@@ -38,7 +38,7 @@ make push SPOKE=cli
 
 ### Subtree Split Process
 
-When you run `make push-all`, this happens automatically:
+When you run `make push`, this happens automatically:
 
 1. **Monorepo Push:** Changes pushed to `aiready` main branch
 2. **Subtree Split:** Each package is extracted into separate branches
@@ -70,13 +70,13 @@ Spoke Repos:
 - Spoke repos are read-only mirrors (auto-updated)
 - External contributions must be synced back using `make sync-from-spoke`
 
-#### 2. Always Use `make push-all` After Commits
+#### 2. Always Use `make push` After Commits
 
 ```bash
 # Workflow:
 git add .
 git commit -m "feat: add new feature"
-make push-all  # ← This syncs everything
+make push  # ← This syncs everything
 ```
 
 #### 3. Check Repository Status Regularly
@@ -110,7 +110,7 @@ git add .
 git commit -m "feat: add config file support"
 
 # 3. Sync all repos
-make push-all
+make push
 ```
 
 #### Bug Fix
@@ -119,7 +119,7 @@ make push-all
 # 1. Fix in monorepo
 # 2. Test: make test
 # 3. Commit: git commit -m "fix: resolve async issue"
-# 4. Sync: make push-all
+# 4. Sync: make push
 ```
 
 #### Release Process
@@ -150,7 +150,7 @@ make publish SPOKE={spoke-name}
 
 ```bash
 # Force sync all spokes
-make push-all
+make push
 
 # Or check individual
 make push SPOKE=cli
@@ -182,7 +182,7 @@ git status
 - **Hub:** Where all development happens
 - **Spokes:** Auto-generated mirrors for independent publishing
 - **Never:** Commit directly to spoke repos
-- **Always:** Use `make push-all` after monorepo commits
+- **Always:** Use `make push` after monorepo commits
 - **Check:** `make release-status` regularly
 
 This architecture enables independent package releases while maintaining a single source of truth for development.
