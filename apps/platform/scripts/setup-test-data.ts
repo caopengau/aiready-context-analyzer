@@ -18,7 +18,7 @@ const doc = DynamoDBDocumentClient.from(client, {
 });
 
 async function setup() {
-  const email = 'caopengau@gmail.com';
+  const email = 'team@getaiready.dev';
   console.log(`Setting up data for ${email} in table ${TABLE_NAME}...`);
 
   // 1. Get User
@@ -45,7 +45,7 @@ async function setup() {
       GSI1SK: email,
       id: userId,
       email,
-      name: 'Cao Peng',
+      name: 'AIReady Team',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
