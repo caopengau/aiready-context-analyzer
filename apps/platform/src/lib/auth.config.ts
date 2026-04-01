@@ -53,7 +53,7 @@ export const authConfig: NextAuthConfig = {
         // Backdoor for demo
         const isBackdoor =
           process.env.NODE_ENV === 'development' &&
-          email === 'caopengau@gmail.com' &&
+          email === 'team@getaiready.dev' &&
           password === 'aiready-demo-2026';
 
         if (isBackdoor) {
