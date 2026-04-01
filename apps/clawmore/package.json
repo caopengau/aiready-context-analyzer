@@ -1,6 +1,6 @@
 {
   "name": "@aiready/clawmore",
-  "version": "0.3.32",
+  "version": "0.3.33",
   "private": true,
   "scripts": {
     "dev": "sst dev --mode=mono --stage local",

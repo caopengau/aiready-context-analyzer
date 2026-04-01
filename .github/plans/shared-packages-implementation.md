@@ -281,7 +281,7 @@ git push origin main
 make push-all
 
 # Or sync individual package
-make publish SPOKE=components OWNER=caopengau
+make publish SPOKE=components OWNER=getaiready
 ```
 
 #### 4. Publish to npm
@@ -563,4 +563,4 @@ export const spacing = {
 **Status:** Ready to begin implementation
 **Priority:** Phase 1 (@aiready/components foundation) for Visualizer Phase 2
 **Timeline:** 4 weeks total (Week 1: Foundation, Week 2: Extended UI + Charts, Week 3: Advanced + Utilities, Week 4: Integration)
-**Maintainer:** @caopengau
+**Maintainer:** @getaiready

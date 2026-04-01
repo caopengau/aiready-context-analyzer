@@ -165,7 +165,7 @@ git push aiready-landing :refs/tags/v0.1.0
 
 ```bash
 # Force re-sync
-make publish-landing OWNER=caopengau
+make publish-landing OWNER=getaiready
 ```
 
 ### Issue: Build fails during release
