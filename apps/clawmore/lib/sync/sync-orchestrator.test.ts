@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { SyncOrchestrator } from './sync-orchestrator';
-import { execSync } from 'child_process';
+import { execFileSync } from 'child_process';
 
 vi.mock('child_process', () => ({
-  execSync: vi.fn().mockReturnValue('Success'),
+  execFileSync: vi.fn().mockReturnValue('Success'),
 }));
 
 describe('SyncOrchestrator', () => {
@@ -26,20 +26,33 @@ describe('SyncOrchestrator', () => {
     await orchestrator.syncHubToSpoke(options);
 
     // Verify commands executed
-    expect(execSync).toHaveBeenCalledWith(
-      expect.stringContaining('git remote add hub-origin'),
+    expect(execFileSync).toHaveBeenCalledWith(
+      'git',
+      [
+        'remote',
+        'add',
+        'hub-origin',
+        'https://github.com/serverlessclaw/serverlessclaw',
+      ],
       expect.anything()
     );
 
-    expect(execSync).toHaveBeenCalledWith(
-      expect.stringContaining('git fetch hub-origin main'),
+    expect(execFileSync).toHaveBeenCalledWith(
+      'git',
+      ['fetch', 'hub-origin', 'main'],
       expect.anything()
     );
 
-    expect(execSync).toHaveBeenCalledWith(
-      expect.stringContaining(
-        'git subtree pull --prefix=core-blueprint hub-origin main --squash'
-      ),
+    expect(execFileSync).toHaveBeenCalledWith(
+      'git',
+      expect.arrayContaining([
+        'subtree',
+        'pull',
+        '--prefix=core-blueprint',
+        'hub-origin',
+        'main',
+        '--squash',
+      ]),
       expect.anything()
     );
   });
@@ -55,10 +68,15 @@ describe('SyncOrchestrator', () => {
 
     await orchestrator.pushSpokeToHub(options);
 
-    expect(execSync).toHaveBeenCalledWith(
-      expect.stringContaining(
-        'git subtree push --prefix=core-blueprint hub-origin main'
-      ),
+    expect(execFileSync).toHaveBeenCalledWith(
+      'git',
+      expect.arrayContaining([
+        'subtree',
+        'push',
+        '--prefix=core-blueprint',
+        'hub-origin',
+        'main',
+      ]),
       expect.anything()
     );
   });

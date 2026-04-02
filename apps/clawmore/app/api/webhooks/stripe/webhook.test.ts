@@ -40,6 +40,8 @@ vi.mock('@aws-sdk/lib-dynamodb', () => {
     UpdateCommand: class MockUpdate {},
     DynamoDBDocument: {
       from: vi.fn().mockImplementation(() => ({
+        get: vi.fn().mockResolvedValue({}),
+        put: vi.fn().mockResolvedValue({}),
         update: mockUpdate,
         query: mockQuery,
         send: vi.fn().mockResolvedValue({}),

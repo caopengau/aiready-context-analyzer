@@ -79,7 +79,7 @@ describe('create-managed-account handler', () => {
     const result = await handler(event);
 
     expect(result.statusCode).toBe(400);
-    expect(JSON.parse(result.body).error).toBe('Missing userEmail or userName');
+    expect(JSON.parse(result.body).error).toBe('Invalid input');
   });
 
   it('should return 500 if any step in the vending process fails', async () => {
