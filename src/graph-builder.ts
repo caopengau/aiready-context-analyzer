@@ -144,12 +144,15 @@ export async function buildDependencyGraph(
     // 1. Get high-fidelity AST-based imports & exports
     const { imports: astImports } = await parseFileExports(content, file);
 
-    // 2. Resolve imports to absolute paths in the graph
-    const resolvedImports = astImports
+    // 2. Filter out type-only imports (they don't create runtime dependencies)
+    const runtimeImports = astImports.filter((i) => !i.isTypeOnly);
+
+    // 3. Resolve imports to absolute paths in the graph
+    const resolvedImports = runtimeImports
       .map((i) => resolveImport(i.source, file, allFilePaths))
       .filter((path): path is string => path !== null);
 
-    const importSources = astImports.map((i) => i.source);
+    const importSources = runtimeImports.map((i) => i.source);
 
     // 3. Wrap with platform-specific metadata (v0.11+)
     const exports = await extractExportsWithAST(
