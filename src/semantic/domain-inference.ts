@@ -171,7 +171,7 @@ export function extractExports(
         domainOptions,
         fileImports
       );
-      exports.push({ name, type, inferredDomain } as any);
+      exports.push({ name, type, inferredDomain });
     }
   });
 

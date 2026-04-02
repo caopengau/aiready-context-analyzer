@@ -7,6 +7,7 @@ import {
 } from '@aiready/core';
 import { analyzeContext } from './orchestrator';
 import { generateSummary } from './summary';
+import type { ContextAnalyzerOptions } from './types';
 import chalk from 'chalk';
 import { writeFileSync } from 'fs';
 
@@ -68,7 +69,9 @@ export async function contextActionHandler(directory: string, options: any) {
     }
 
     // Run analysis
-    const results = await analyzeContext(finalOptions as any);
+    const results = await analyzeContext(
+      finalOptions as ContextAnalyzerOptions
+    );
     const summary = generateSummary(results, finalOptions);
 
     const duration = getElapsedTime(startTime);
@@ -104,7 +107,7 @@ export async function contextActionHandler(directory: string, options: any) {
     } else {
       // Default: Console (Dynamic Import)
       const { displayConsoleReport } = await import('./report/console-report');
-      displayConsoleReport(summary, results, (finalOptions as any).maxResults);
+      displayConsoleReport(summary, results, finalOptions.maxResults);
       console.log(chalk.dim(`\n✨ Analysis completed in ${duration}ms\n`));
     }
   } catch (error) {

@@ -18,6 +18,8 @@ export interface ContextAnalyzerOptions extends ScanOptions {
   focus?: 'fragmentation' | 'cohesion' | 'depth' | 'all';
   /** Whether to include node_modules in the analysis (default: false) */
   includeNodeModules?: boolean;
+  /** Maximum number of results to display in console output (default: 10) */
+  maxResults?: number;
 }
 
 /**
