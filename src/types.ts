@@ -8,8 +8,8 @@ export type { ExportInfo };
 export interface ContextAnalyzerOptions extends ScanOptions {
   /** Maximum acceptable import depth (default: 5) */
   maxDepth?: number;
-  /** Maximum acceptable token budget for a single context (default: 25000) */
-  maxContextBudget?: number;
+  /** Maximum acceptable token budget for a single context, or "auto" for smart scaling */
+  maxContextBudget?: number | 'auto';
   /** Minimum acceptable cohesion score between 0 and 1 (default: 0.6) */
   minCohesion?: number;
   /** Maximum acceptable fragmentation score between 0 and 1 (default: 0.5) */

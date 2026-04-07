@@ -23,6 +23,7 @@ import {
   adjustFragmentationForClassification,
 } from './classifier';
 import { getClassificationRecommendations } from './remediation';
+import { getSmartDefaults } from './defaults';
 
 export interface MappingOptions {
   maxDepth: number;
@@ -144,6 +145,38 @@ export function calculateCohesion(
 }
 
 /**
+ * Resolves options, handling "auto" values by using smart defaults.
+ */
+async function resolveOptions(options: ContextAnalyzerOptions): Promise<
+  Omit<ContextAnalyzerOptions, 'maxContextBudget'> & {
+    maxContextBudget: number;
+  }
+> {
+  const budget = options.maxContextBudget;
+  if (budget === 'auto') {
+    const smartDefaults = await getSmartDefaults(
+      options.rootDir || '.',
+      options as ContextAnalyzerOptions
+    );
+    return {
+      ...options,
+      maxContextBudget: smartDefaults.maxContextBudget,
+      maxDepth: smartDefaults.maxDepth,
+      minCohesion: smartDefaults.minCohesion,
+      maxFragmentation: smartDefaults.maxFragmentation,
+    } as Omit<ContextAnalyzerOptions, 'maxContextBudget'> & {
+      maxContextBudget: number;
+    };
+  }
+  return {
+    ...options,
+    maxContextBudget: typeof budget === 'number' ? budget : 25000,
+  } as Omit<ContextAnalyzerOptions, 'maxContextBudget'> & {
+    maxContextBudget: number;
+  };
+}
+
+/**
  * Performs deep context analysis of a project.
  * Scans files, builds a dependency graph, calculates context budgets,
  * and identifies structural issues like high fragmentation or depth.
@@ -154,6 +187,8 @@ export function calculateCohesion(
 export async function analyzeContext(
   options: ContextAnalyzerOptions
 ): Promise<ContextAnalysisResult[]> {
+  const resolvedOptions = await resolveOptions(options);
+
   const {
     maxDepth = 5,
     maxContextBudget = 25000,
@@ -161,7 +196,7 @@ export async function analyzeContext(
     maxFragmentation = 0.5,
     includeNodeModules = false,
     ...scanOptions
-  } = options;
+  } = resolvedOptions;
 
   const files = await scanFiles({
     ...scanOptions,
