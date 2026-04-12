@@ -3,129 +3,16 @@ import type {
   ContextAnalysisResult,
   ContextAnalyzerOptions,
   FileClassification,
-  DependencyNode,
-  DependencyGraph,
-  ModuleCluster,
 } from './types';
 import { calculateEnhancedCohesion } from './metrics';
 import { analyzeIssues } from './issue-analyzer';
 import {
   buildDependencyGraph,
   detectCircularDependencies,
-  calculateImportDepth,
-  getTransitiveDependencies,
-  calculateContextBudget,
 } from './graph-builder';
 import { detectModuleClusters } from './cluster-detector';
-import {
-  classifyFile,
-  adjustCohesionForClassification,
-  adjustFragmentationForClassification,
-} from './classifier';
-import { getClassificationRecommendations } from './remediation';
-import { getSmartDefaults } from './defaults';
-
-export interface MappingOptions {
-  maxDepth: number;
-  maxContextBudget: number;
-  minCohesion: number;
-  maxFragmentation: number;
-}
-
-/**
- * Maps a single dependency node to a comprehensive ContextAnalysisResult.
- */
-function mapNodeToResult(
-  node: DependencyNode,
-  graph: DependencyGraph,
-  clusters: ModuleCluster[],
-  allCircularDeps: string[][],
-  options: MappingOptions
-): ContextAnalysisResult {
-  const file = node.file;
-  const tokenCost = node.tokenCost;
-  const importDepth = calculateImportDepth(file, graph);
-  const transitiveDeps = getTransitiveDependencies(file, graph);
-  const contextBudget = calculateContextBudget(file, graph);
-  const circularDeps = allCircularDeps.filter((cycle) => cycle.includes(file));
-
-  // Find cluster for this file
-  const cluster = clusters.find((c) => c.files.includes(file));
-  const rawFragmentationScore = cluster ? cluster.fragmentationScore : 0;
-
-  // Cohesion
-  const rawCohesionScore = calculateEnhancedCohesion(
-    node.exports,
-    file,
-    options as unknown as Record<string, unknown>
-  );
-
-  // Initial classification
-  const fileClassification = classifyFile(node, rawCohesionScore);
-
-  // Adjust scores based on classification
-  const cohesionScore = adjustCohesionForClassification(
-    rawCohesionScore,
-    fileClassification
-  );
-  const fragmentationScore = adjustFragmentationForClassification(
-    rawFragmentationScore,
-    fileClassification
-  );
-
-  const { severity, issues, recommendations, potentialSavings } = analyzeIssues(
-    {
-      file,
-      importDepth,
-      tokenCost,
-      contextBudget,
-      cohesionScore,
-      fragmentationScore,
-      maxDepth: options.maxDepth,
-      maxContextBudget: options.maxContextBudget,
-      minCohesion: options.minCohesion,
-      maxFragmentation: options.maxFragmentation,
-      circularDeps,
-    }
-  );
-
-  // Add classification-specific recommendations
-  const classRecs = getClassificationRecommendations(
-    fileClassification,
-    file,
-    issues
-  );
-  const allRecommendations = Array.from(
-    new Set([...recommendations, ...classRecs])
-  );
-
-  return {
-    file,
-    tokenCost,
-    linesOfCode: node.linesOfCode,
-    importDepth,
-    dependencyCount: transitiveDeps.size,
-    dependencyList: Array.from(transitiveDeps.keys()),
-    circularDeps,
-    cohesionScore,
-    domains: Array.from(
-      new Set(
-        node.exports.flatMap(
-          (e: any) => e.domains?.map((d: any) => d.domain) || []
-        )
-      )
-    ),
-    exportCount: node.exports.length,
-    contextBudget,
-    fragmentationScore,
-    relatedFiles: cluster ? cluster.files : [],
-    fileClassification,
-    severity,
-    issues,
-    recommendations: allRecommendations,
-    potentialSavings,
-  };
-}
+import { mapNodeToResult } from './node-mapper';
+import { resolveOptions } from './options-resolver';
 
 /**
  * Calculate cohesion score (how related are exports in a file).
@@ -142,38 +29,6 @@ export function calculateCohesion(
   options?: any
 ): number {
   return calculateEnhancedCohesion(exports, filePath, options);
-}
-
-/**
- * Resolves options, handling "auto" values by using smart defaults.
- */
-async function resolveOptions(options: ContextAnalyzerOptions): Promise<
-  Omit<ContextAnalyzerOptions, 'maxContextBudget'> & {
-    maxContextBudget: number;
-  }
-> {
-  const budget = options.maxContextBudget;
-  if (budget === 'auto') {
-    const smartDefaults = await getSmartDefaults(
-      options.rootDir || '.',
-      options as ContextAnalyzerOptions
-    );
-    return {
-      ...options,
-      maxContextBudget: smartDefaults.maxContextBudget,
-      maxDepth: smartDefaults.maxDepth,
-      minCohesion: smartDefaults.minCohesion,
-      maxFragmentation: smartDefaults.maxFragmentation,
-    } as Omit<ContextAnalyzerOptions, 'maxContextBudget'> & {
-      maxContextBudget: number;
-    };
-  }
-  return {
-    ...options,
-    maxContextBudget: typeof budget === 'number' ? budget : 25000,
-  } as Omit<ContextAnalyzerOptions, 'maxContextBudget'> & {
-    maxContextBudget: number;
-  };
 }
 
 /**
@@ -233,7 +88,7 @@ export async function analyzeContext(
         analyzeIssues({
           file: metric.file,
           importDepth: metric.importDepth,
-          tokenCost: metric.contextBudget, // For Python, we use the reported budget as self-cost for now
+          tokenCost: metric.contextBudget,
           contextBudget: metric.contextBudget,
           cohesionScore: metric.cohesion,
           fragmentationScore: 0,
