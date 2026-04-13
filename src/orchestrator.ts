@@ -4,14 +4,6 @@ import type {
   ContextAnalyzerOptions,
   FileClassification,
 } from './types';
-import { calculateEnhancedCohesion } from './metrics';
-import { analyzeIssues } from './issue-analyzer';
-import {
-  buildDependencyGraph,
-  detectCircularDependencies,
-} from './graph-builder';
-import { detectModuleClusters } from './cluster-detector';
-import { mapNodeToResult } from './node-mapper';
 import { resolveOptions } from './options-resolver';
 
 /**
@@ -23,11 +15,12 @@ import { resolveOptions } from './options-resolver';
  * @param options - Additional options for cohesion calculation
  * @returns Cohesion score between 0 and 1
  */
-export function calculateCohesion(
+export async function calculateCohesion(
   exports: any[],
   filePath?: string,
   options?: any
-): number {
+): Promise<number> {
+  const { calculateEnhancedCohesion } = await import('./metrics');
   return calculateEnhancedCohesion(exports, filePath, options);
 }
 
@@ -42,6 +35,7 @@ export function calculateCohesion(
 export async function analyzeContext(
   options: ContextAnalyzerOptions
 ): Promise<ContextAnalysisResult[]> {
+  // 1. Resolve configuration (Lightweight)
   const resolvedOptions = await resolveOptions(options);
 
   const {
@@ -53,6 +47,7 @@ export async function analyzeContext(
     ...scanOptions
   } = resolvedOptions;
 
+  // 2. Scan project structure (Core utility)
   const files = await scanFiles({
     ...scanOptions,
     exclude:
@@ -70,6 +65,20 @@ export async function analyzeContext(
       content: await readFileContent(file),
     }))
   );
+
+  // 3. Dynamic import heavy analysis modules to isolate context budget
+  // By moving these to internal imports, the orchestrator's static entry context is minimized.
+  const [
+    { buildDependencyGraph, detectCircularDependencies },
+    { detectModuleClusters },
+    { mapNodeToResult },
+    { analyzeIssues },
+  ] = await Promise.all([
+    import('./graph-builder'),
+    import('./cluster-detector'),
+    import('./node-mapper'),
+    import('./issue-analyzer'),
+  ]);
 
   const graph = await buildDependencyGraph(
     fileContents.filter((f) => !f.file.toLowerCase().endsWith('.py'))
