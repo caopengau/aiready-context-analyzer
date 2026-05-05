@@ -283,6 +283,28 @@ export function isConfigFile(node: DependencyNode): boolean {
 }
 
 /**
+ * Detect if a file is a base class or base module intended for inheritance.
+ *
+ * @param node - The dependency node to analyze.
+ * @returns True if the file name or exports suggest it's a base component.
+ */
+export function isBaseModule(node: DependencyNode): boolean {
+  const { file, exports } = node;
+  const fileName = file.split('/').pop()?.toLowerCase() || '';
+
+  const isBaseName =
+    fileName.includes('.base.') ||
+    fileName.startsWith('base-') ||
+    fileName.startsWith('base_');
+  const hasBaseClass = (exports || []).some(
+    (exp: ExportInfo) =>
+      exp.type === 'class' && exp.name.toLowerCase().startsWith('base')
+  );
+
+  return isBaseName || hasBaseClass;
+}
+
+/**
  * Detect if a file is part of a hub-and-spoke monorepo architecture.
  *
  * Many files spread across multiple packages (spokes) is intentional in

@@ -10,6 +10,7 @@ import {
   isParserFile,
   isSessionFile,
   isUtilityModule,
+  isBaseModule,
   isConfigFile,
   isHubAndSpokeFile,
 } from './classify/file-classifiers';
@@ -28,6 +29,7 @@ export const CLASSIFICATION = {
   PARSER: 'parser-file' as const,
   COHESIVE_MODULE: 'cohesive-module' as const,
   UTILITY_MODULE: 'utility-module' as const,
+  BASE_MODULE: 'base-module' as const,
   SPOKE_MODULE: 'spoke-module' as const,
   MIXED_CONCERNS: 'mixed-concerns' as const,
   UNKNOWN: 'unknown' as const,
@@ -104,7 +106,12 @@ export function classifyFile(
     return CLASSIFICATION.COHESIVE_MODULE;
   }
 
-  // 11. Detect Spoke modules in monorepo
+  // 11. Detect Base modules
+  if (isBaseModule(node)) {
+    return CLASSIFICATION.BASE_MODULE;
+  }
+
+  // 12. Detect Spoke modules in monorepo
   if (isHubAndSpokeFile(node)) {
     return CLASSIFICATION.SPOKE_MODULE;
   }

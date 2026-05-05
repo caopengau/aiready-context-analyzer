@@ -10,6 +10,11 @@ import { buildCoUsageMatrix } from './semantic/co-usage';
 import { buildTypeGraph } from './semantic/type-graph';
 import { inferDomainFromSemantics } from './semantic/domain-inference';
 import { extractExportsWithAST } from './ast-utils';
+import {
+  isBaseModule,
+  isTypeDefinition,
+  isBarrelExport,
+} from './classify/file-classifiers';
 import { join, dirname, normalize } from 'path';
 
 /**
@@ -289,9 +294,20 @@ export function calculateContextBudget(
   for (const [dep, depth] of deps.entries()) {
     const depNode = graph.nodes.get(dep);
     if (depNode) {
-      // Discount token cost by depth (20% reduction per level)
-      // This prevents "barrel file" false positives where a facade pulls in the entire project
-      const discountFactor = Math.pow(0.8, depth - 1);
+      // 1. Determine base discount factor (was 0.8)
+      // We reduce this to 0.6 to be more realistic about transitive context burden
+      let discountBase = 0.6;
+
+      // 2. Apply extra discount for specialized files that are "pure context" or "boilerplate"
+      if (isTypeDefinition(depNode) || isBarrelExport(depNode)) {
+        discountBase = 0.4; // Types and barrels are lighter context burden
+      } else if (isBaseModule(depNode)) {
+        discountBase = 0.5; // Base classes are often large but only partially relevant
+      }
+
+      // Discount token cost by depth
+      // This prevents "transitive explosion" while still accounting for context
+      const discountFactor = Math.pow(discountBase, depth);
       totalTokens += depNode.tokenCost * discountFactor;
     }
   }

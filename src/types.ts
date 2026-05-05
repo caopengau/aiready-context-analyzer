@@ -87,6 +87,7 @@ export type FileClassification =
   | 'type-definition' // Primarily type/interface definitions
   | 'cohesive-module' // Single domain, high cohesion (acceptable large files)
   | 'utility-module' // Utility/helper files with cohesive purpose despite multi-domain
+  | 'base-module' // Base classes or modules intended for inheritance
   | 'service-file' // Service files orchestrating multiple dependencies
   | 'lambda-handler' // Lambda/API handlers with single business purpose
   | 'email-template' // Email templates/layouts with structural cohesion
